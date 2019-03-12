@@ -3,6 +3,7 @@ package com.training.spring.service.measure;
 import com.training.spring.model.Captor;
 import com.training.spring.model.Measure;
 import com.training.spring.model.MeasureStep;
+import com.training.spring.model.Site;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +25,7 @@ public class SimulatedMeasureServiceTest {
     /**
      * Captor used in tests
      */
-    private Captor captor = new Captor("test");
+    private Captor captor = new Captor("test", new Site("Site A"));
     /**
      * Start instant used in tests
      */

@@ -22,24 +22,6 @@ public class SiteServiceImplTest {
     @Rule
     public OutputCapture output = new OutputCapture();
 
-    @Test
-    public void readFileFromUrl(){
-        siteService.readFile("url:https://dev-mind.fr/lorem.txt");
-        assertThat(output.toString()).contains("Lorem ipsum dolor sit amet, consectetur adipiscing elit");
-    }
-
-    @Test
-    public void readFileFromClasspath(){
-        siteService.readFile("classpath:lorem.txt");
-        assertThat(output.toString()).contains("Lorem ipsum dolor sit amet, consectetur adipiscing elit");
-    }
-
-    @Test
-    public void readFileFromFileSystem(){
-        siteService.readFile("file:/Users/Diginamic/Documents/lorem.txt");
-        assertThat(output.toString()).contains("Lorem ipsum dolor sit amet, consectetur adipiscing elit");
-    }
-
     /*@Test
     public void findByIdShouldReturnNullWhenIdIsNull(){
         // Initialisation
