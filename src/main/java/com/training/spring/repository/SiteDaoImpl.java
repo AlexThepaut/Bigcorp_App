@@ -18,12 +18,16 @@ public class SiteDaoImpl implements SiteDao {
 
     @Override
     public void create(Site element) {
-
+        jdbcTemplate.update("insert into SITE values (:id, :name)",
+            new MapSqlParameterSource()
+                .addValue("id", element.getId())
+                .addValue("name", element.getName()));
     }
 
     @Override
     public Site findById(String s) {
-        return null;
+        return jdbcTemplate.queryForObject("select * from SITE where id =:id",
+                new MapSqlParameterSource().addValue("id", s), Site.class);
     }
 
     @Override
@@ -41,6 +45,7 @@ public class SiteDaoImpl implements SiteDao {
 
     @Override
     public void deleteById(String s) {
-
+        jdbcTemplate.update("delete from SITE where id =:id",
+                new MapSqlParameterSource().addValue("id", s));
     }
 }

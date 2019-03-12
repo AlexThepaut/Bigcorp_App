@@ -1,7 +1,9 @@
 package com.training.spring.repository;
 
 import com.training.spring.model.Captor;
+import com.training.spring.model.Captor;
 import com.training.spring.model.Site;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -22,27 +24,35 @@ public class CaptorDaoImpl implements CaptorDao {
     }
 
     @Override
-    public void create(Site element) {
-
+    public void create(Captor element) {
+        jdbcTemplate.update("insert into CAPTOR values (:id, :name)",
+                new MapSqlParameterSource()
+                        .addValue("id", element.getId())
+                        .addValue("name", element.getName()));
     }
 
     @Override
-    public Site findById(String s) {
+    public Captor findById(String s) {
+        return jdbcTemplate.queryForObject("select * from CAPTOR where id =:id",
+                new MapSqlParameterSource().addValue("id", s), Captor.class);
+    }
+
+    @Override
+    public List<Captor> findAll() {
         return null;
     }
 
     @Override
-    public List<Site> findAll() {
-        return null;
-    }
-
-    @Override
-    public void update(Site element) {
-
+    public void update(Captor element) {
+        jdbcTemplate.update("update CAPTOR set name = :name where id =:id",
+                new MapSqlParameterSource()
+                        .addValue("id", element.getId())
+                        .addValue("name", element.getName()));
     }
 
     @Override
     public void deleteById(String s) {
-
+        jdbcTemplate.update("delete from CAPTOR where id =:id",
+                new MapSqlParameterSource().addValue("id", s));
     }
 }
