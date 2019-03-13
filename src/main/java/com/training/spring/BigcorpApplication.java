@@ -22,6 +22,5 @@ public class BigcorpApplication {
 		logger.info("Application [" + bigCorpApplicationProperties.getName() + "] - version: " + bigCorpApplicationProperties.getVersion());
 		logger.info("plus d'informations sur " + bigCorpApplicationProperties.getWebSiteUrl());
 		logger.info("==========================================================================");
-		context.getBean(SiteService.class).findById("test");
 	}
 }
