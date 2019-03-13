@@ -7,16 +7,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
 @RunWith(SpringRunner.class)
-@JdbcTest
-@ContextConfiguration(classes = {DaoTestConfig.class})
+@DataJpaTest
+@ComponentScan
 public class SiteDaoImplTest {
     @Autowired
     private SiteDao siteDao;
@@ -47,32 +47,24 @@ public class SiteDaoImplTest {
     @Test
     public void create() {
         Assertions.assertThat(siteDao.findAll()).hasSize(1);
-        siteDao.create(new Site("New site"));
-        Assertions.assertThat(siteDao.findAll())
-                .hasSize(2)
-                .extracting(Site::getName)
-                .contains("Bigcorp Lyon", "New site");
+        siteDao.persist(new Site("New site"));
+        Assertions.assertThat(siteDao.findAll()).hasSize(2);
     }
     @Test
     public void update() {
         Site site = siteDao.findById("site1");
         Assertions.assertThat(site.getName()).isEqualTo("Bigcorp Lyon");
         site.setName("site updated");
-        siteDao.update(site);
+        siteDao.persist(site);
         site = siteDao.findById("site1");
         Assertions.assertThat(site.getName()).isEqualTo("site updated");
     }
     @Test
     public void deleteById() {
         Site newsite = new Site("New site");
-        siteDao.create(newsite);
-        Assertions.assertThat(siteDao.findById(newsite.getId())).isNotNull();
-        siteDao.deleteById(newsite.getId());
-        Assertions.assertThat(siteDao.findById(newsite.getId())).isNull();
-    }
-    @Test
-    public void deleteByIdShouldThrowExceptionWhenIdIsUsedAsForeignKey() {
-        Assertions.assertThatThrownBy(() -> siteDao.deleteById("site1"))
-                .isExactlyInstanceOf(DataIntegrityViolationException.class);
+        siteDao.persist(newsite);
+        Assertions.assertThat(siteDao.findAll()).hasSize(2);
+        siteDao.delete(newsite);
+        Assertions.assertThat(siteDao.findAll()).hasSize(1);
     }
 }

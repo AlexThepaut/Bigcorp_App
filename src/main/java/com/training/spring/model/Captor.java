@@ -1,24 +1,21 @@
 package com.training.spring.model;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.persistence.*;
 import java.util.Objects;
 import java.util.UUID;
 
+@Entity
 public class Captor {
-    /**
-     * Captor id
-     */
+    @Id
     private String id = UUID.randomUUID().toString();
-
-    /**
-     * Captor name
-     */
+    @Column(nullable = false)
     private String name;
-
-    /**
-     * Type of power source
-     */
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private PowerSource powerSource;
-
+    @ManyToOne(optional = false)
     private Site site;
 
     @Deprecated
