@@ -2,19 +2,22 @@ package com.training.spring.repository;
 
 import com.training.spring.model.Captor;
 
+import com.training.spring.model.Measure;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 @Repository
 public class CaptorDaoImpl implements CaptorDao {
     @PersistenceContext
     private EntityManager em;
+
+    @Autowired
+    private MeasureDao measureDao;
+
     @Override
     public void persist(Captor captor) {
         em.persist(captor);
@@ -37,5 +40,12 @@ public class CaptorDaoImpl implements CaptorDao {
     @Override
     public void delete(Captor captor) {
         em.remove(captor);
+    }
+
+    @Override
+    public void deleteAttachForeignKey(Captor  captor){
+        em.createQuery("select m from Measure m where m.captor =: captor",Measure.class)
+                .setParameter("captor", captor)
+                .getResultList().forEach(m -> measureDao.delete(m));
     }
 }

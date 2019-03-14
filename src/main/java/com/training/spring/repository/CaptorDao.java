@@ -9,4 +9,5 @@ import java.util.List;
 @Service("captorDao")
 public interface CaptorDao extends CrudDao<Captor, String> {
     List<Captor> findBySiteId(String siteId);
+    void deleteAttachForeignKey(Captor captor);
 }

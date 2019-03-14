@@ -1,68 +1,99 @@
 package com.training.spring.repository;
 
 import com.training.spring.model.Captor;
-import com.training.spring.model.Measure;
+import com.training.spring.model.PowerSource;
 import com.training.spring.model.Site;
 import org.assertj.core.api.Assertions;
-import org.assertj.core.groups.Tuple;
-import org.junit.Before;
+import org.hibernate.exception.ConstraintViolationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.time.Instant;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
-@JdbcTest
-@ContextConfiguration(classes = {DaoTestConfig.class})
+@DataJpaTest
+@ComponentScan
 public class CaptorDaoImplTest {
     @Autowired
-    private MeasureDao measureDao;
-    @Test
-    public void findById() {
-        Measure measure = measureDao.findById(-1L);
-        Assertions.assertThat(measure.getId()).isEqualTo(-1L);
-        Assertions.assertThat(measure.getInstant()).isEqualTo(Instant.parse("2018-08-09T11:00:00.000Z"));
-        Assertions.assertThat(measure.getValueInWatt()).isEqualTo(1_000_000);
-        Assertions.assertThat(measure.getCaptor().getName()).isEqualTo("Eolienne");
-        Assertions.assertThat(measure.getCaptor().getSite().getName()).isEqualTo("Bigcorp Lyon");
-    }
-    @Test
-    public void findByIdShouldReturnNullWhenIdUnknown() {
-        Measure measure = measureDao.findById(-1000L);
-        Assertions.assertThat(measure).isNull();
-    }
+    private CaptorDao captorDao;
+
+    private  Captor captor;
+
+    @Autowired
+    private EntityManager entityManager;
+
     @Test
     public void findAll() {
-        List<Measure> measures = measureDao.findAll();
-        Assertions.assertThat(measures).hasSize(10);
+        List<Captor> captors = captorDao.findAll();
+        Assertions.assertThat(captors).hasSize(2);
     }
+
+    @Test
+    public void findById() {
+        Captor captor = captorDao.findById("c1");
+        Assertions.assertThat(captor.getId()).isEqualTo("c1");
+        Assertions.assertThat(captor.getName()).isEqualTo("Eolienne");
+        Assertions.assertThat(captor.getPowerSource().toString()).isEqualTo("FIXED");
+        Assertions.assertThat(captor.getSite().getId()).isEqualTo("site1");
+    }
+
+    @Test
+    public void findByIdShouldReturnNullWhenIdUnknown() {
+        Captor captor = captorDao.findById("c3");
+        Assertions.assertThat(captor).isNull();
+    }
+
+    @Test
+    public void findBySiteId(){
+        List<Captor> captors = captorDao.findBySiteId("site1");
+        Assertions.assertThat(captors).hasSize(2);
+    }
+
     @Test
     public void create() {
-        Captor captor = new Captor("Eolienne", new Site("site"));
-        captor.setId("c1");
-        Assertions.assertThat(measureDao.findAll()).hasSize(10);
-        measureDao.persist(new Measure(Instant.now(), 2_333_666, captor));
-        Assertions.assertThat(measureDao.findAll()).hasSize(11);
+        Site site = new Site("dfghjk");
+        entityManager.persist(site);
+        Assertions.assertThat(captorDao.findAll()).hasSize(2);
+        Captor captor = new Captor("New captor", site);
+        captor.setPowerSource(PowerSource.SIMULATED);
+        captorDao.persist(captor);
+        Assertions.assertThat(captorDao.findAll())
+                .hasSize(3)
+                .extracting(Captor::getName)
+                .contains("Eolienne", "Laminoire à chaud", "New captor");
     }
+
     @Test
     public void update() {
-        Measure measure = measureDao.findById(-1L);
-        Assertions.assertThat(measure.getValueInWatt()).isEqualTo(1_000_000);
-        measure.setValueInWatt(2_333_666);
-        measureDao.persist(measure);
-        measure = measureDao.findById(-1L);
-        Assertions.assertThat(measure.getValueInWatt()).isEqualTo(2_333_666);
+        Captor captor = captorDao.findById("c1");
+        Assertions.assertThat(captor.getName()).isEqualTo("Eolienne");
+        captor.setName("Hey Oh ! lienne");
+        captorDao.persist(captor);
+        captor = captorDao.findById("c1");
+        Assertions.assertThat(captor.getName()).isEqualTo("Hey Oh ! lienne");
     }
     @Test
     public void deleteById() {
-        Assertions.assertThat(measureDao.findAll()).hasSize(10);
-        measureDao.delete(measureDao.findById(-1L));
-        Assertions.assertThat(measureDao.findAll()).hasSize(9);
+        Assertions.assertThat(captorDao.findAll()).hasSize(2);
+        captorDao.delete(captorDao.findById("c2"));
+        Assertions.assertThat(captorDao.findAll()).hasSize(1);
+    }
+
+    @Test
+    public void deleteByIdShouldThrowExceptionWhenIdIsUsedAsForeignKey() {
+        captor = captorDao.findById("c1");
+        Assertions
+                .assertThatThrownBy(() -> {
+                    captorDao.delete(captor);
+                    entityManager.flush();
+                })
+                .isExactlyInstanceOf(PersistenceException.class)
+                .hasCauseExactlyInstanceOf(ConstraintViolationException.class);
     }
 }
