@@ -1,6 +1,7 @@
 package com.training.spring.service;
 
 import com.training.spring.model.Captor;
+import com.training.spring.model.RealCaptor;
 import com.training.spring.model.Site;
 import com.training.spring.repository.CaptorDao;
 import org.assertj.core.api.Assertions;
@@ -37,7 +38,7 @@ public class CaptorServiceImplTest {
     public void findBySite() {
         // Initialisation
         String siteId = "siteId";
-        Captor expectedCaptor = new Captor("Capteur A", new Site("Florange"));
+        Captor expectedCaptor = new RealCaptor("Capteur A", new Site("Florange"));
         Mockito.when(captorDao.findBySiteId(siteId)).thenReturn(Arrays.asList(expectedCaptor))
         ;
         // Appel du SUT

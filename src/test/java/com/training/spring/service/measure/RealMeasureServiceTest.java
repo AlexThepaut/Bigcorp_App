@@ -1,9 +1,6 @@
 package com.training.spring.service.measure;
 
-import com.training.spring.model.Captor;
-import com.training.spring.model.Measure;
-import com.training.spring.model.MeasureStep;
-import com.training.spring.model.Site;
+import com.training.spring.model.*;
 import com.training.spring.service.measure.MeasureServiceTestConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +23,7 @@ public class RealMeasureServiceTest {
     /**
      * Captor used in tests
      */
-    private Captor captor = new Captor("test", new Site("SiteA"));
+    private Captor captor = new RealCaptor("test", new Site("SiteA"));
     /**
      * Start instant used in tests
      */

@@ -1,20 +1,16 @@
 package com.training.spring.model;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.persistence.*;
 import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-public class Captor {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+public abstract class Captor {
     @Id
     private String id = UUID.randomUUID().toString();
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private PowerSource powerSource;
     @ManyToOne(optional = false)
     private Site site;
 
@@ -22,12 +18,6 @@ public class Captor {
     public Captor() {
         // Use for serializer or deserializer
     }
-
-    /**
-     * Constructor to use with required property
-     * @param name
-     * @param site
-     */
     public Captor(String name, Site site) {
         this.name = name;
         this.site = site;
@@ -36,7 +26,6 @@ public class Captor {
     public String getId() {
         return id;
     }
-
     public void setId(String id) {
         this.id = id;
     }
@@ -44,23 +33,13 @@ public class Captor {
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
-    }
-
-    public PowerSource getPowerSource() {
-        return powerSource;
-    }
-
-    public void setPowerSource(PowerSource powerSource) {
-        this.powerSource = powerSource;
     }
 
     public Site getSite() {
         return site;
     }
-
     public void setSite(Site site) {
         this.site = site;
     }
@@ -72,13 +51,11 @@ public class Captor {
         Captor site = (Captor) o;
         return Objects.equals(name, site.name);
     }
-
     @Override
     public int hashCode() {
 
         return Objects.hash(name);
     }
-
     @Override
     public String toString() {
         return "Captor{" +
@@ -86,5 +63,4 @@ public class Captor {
                 ", name='" + name + '\'' +
                 '}';
     }
-
 }

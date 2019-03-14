@@ -1,13 +1,14 @@
 package com.training.spring.repository;
 
 import com.training.spring.model.Captor;
-import com.training.spring.model.Site;
-import org.springframework.stereotype.Service;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service("captorDao")
-public interface CaptorDao extends CrudDao<Captor, String> {
+@Repository
+@Transactional
+public interface CaptorDao extends JpaRepository<Captor, String> {
     List<Captor> findBySiteId(String siteId);
-    void deleteAttachForeignKey(Captor captor);
 }

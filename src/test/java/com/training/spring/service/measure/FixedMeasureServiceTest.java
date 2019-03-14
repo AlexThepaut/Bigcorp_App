@@ -1,9 +1,6 @@
 package com.training.spring.service.measure;
 
-import com.training.spring.model.Captor;
-import com.training.spring.model.Measure;
-import com.training.spring.model.MeasureStep;
-import com.training.spring.model.Site;
+import com.training.spring.model.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +21,7 @@ public class FixedMeasureServiceTest {
     /**
      * Captor used in tests
      */
-    private Captor captor = new Captor("test", new Site("Site A"));
+    private Captor captor = new FixedCaptor("test", new Site("Site A"));
     /**
      * Start instant used in tests
      */
