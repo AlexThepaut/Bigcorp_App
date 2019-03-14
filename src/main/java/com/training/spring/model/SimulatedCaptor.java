@@ -1,6 +1,8 @@
 package com.training.spring.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @DiscriminatorValue("SIMULATED")
@@ -31,5 +33,10 @@ public class SimulatedCaptor extends Captor{
 
     public void setMinPowerInWatt(int minPowerInWatt) {
         this.minPowerInWatt = minPowerInWatt;
+    }
+
+    @AssertTrue(message = "minPowerInWatt should be less than maxPowerInWatt")
+    public boolean isValid(){
+        return this.minPowerInWatt <= this.maxPowerInWatt;
     }
 }
