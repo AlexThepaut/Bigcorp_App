@@ -4,6 +4,7 @@ import com.training.spring.model.*;
 import com.training.spring.model.Captor;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.groups.Tuple;
+import org.h2.util.TempFileDeleter;
 import org.hibernate.exception.ConstraintViolationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,7 +31,10 @@ public class CaptorDaoImplTest {
     private EntityManager entityManager;
     private Captor captor;
     private Site site;
+    @Autowired
     private SiteDao siteDao;
+    @Autowired
+    private MeasureDao measureDao;
     @Test
     public void findById() {
         Optional<Captor> captor = captorDao.findById("c1");
@@ -77,7 +81,7 @@ public class CaptorDaoImplTest {
     }
     @Test
     public void deleteById() {
-        Captor newcaptor = new FixedCaptor("New captor", site);
+        Captor newcaptor = new FixedCaptor("New captor", site, 1000000);
         captorDao.save(newcaptor);
         Assertions.assertThat(captorDao.findById(newcaptor.getId())).isNotEmpty();
         captorDao.delete(newcaptor);
@@ -104,7 +108,7 @@ public class CaptorDaoImplTest {
                 .withIgnoreNullValues();
         site = new Site("Site2");
         entityManager.persist(site);
-        Captor captor = new FixedCaptor("lienn", site);
+        Captor captor = new FixedCaptor("lienn", site, 1000000);
         List<Captor> captors = captorDao.findAll(Example.of(captor, matcher));
         Assertions.assertThat(captors)
                 .hasSize(1)
@@ -151,5 +155,15 @@ public class CaptorDaoImplTest {
                 })
                 .isExactlyInstanceOf(javax.validation.ConstraintViolationException.class)
                 .hasMessageContaining("la taille doit être comprise entre 3 et 100");
+    }
+
+    @Test
+    public void deleteBySiteId() {
+        site = siteDao.findById("site1").get();
+        Assertions.assertThat(captorDao.findBySiteId("site1")).hasSize(2);
+        measureDao.deleteAll();
+        captorDao.deleteBySiteId("site1");
+        siteDao.delete(site);
+        Assertions.assertThat(captorDao.findBySiteId("site1")).isEmpty();
     }
 }

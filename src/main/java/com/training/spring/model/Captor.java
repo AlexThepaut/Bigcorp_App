@@ -10,12 +10,18 @@ import java.util.UUID;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class Captor {
     @Id
-    private String id = UUID.randomUUID().toString();
+    private String id;
+
     @NotNull
     @Size(min=3, max=100)
     private String name;
     @ManyToOne(optional = false)
     private Site site;
+
+
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private PowerSource powerSource;
 
     @Version
     private int version;
@@ -24,9 +30,10 @@ public abstract class Captor {
     public Captor() {
         // Use for serializer or deserializer
     }
-    public Captor(String name, Site site) {
+    public Captor(String name, Site site, PowerSource powerSource) {
         this.name = name;
         this.site = site;
+        this.powerSource = powerSource;
     }
 
     public String getId() {
@@ -55,6 +62,18 @@ public abstract class Captor {
     }
     public void setVersion(int version) {
         this.version = version;
+    }
+
+    public PowerSource getPowerSource() {
+        return powerSource;
+    }
+    public void setPowerSource(PowerSource powerSource) {
+        this.powerSource = powerSource;
+    }
+
+    @PrePersist
+    public void generateId() {
+        this.id = UUID.randomUUID().toString();
     }
 
     @Override

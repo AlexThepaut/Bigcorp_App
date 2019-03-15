@@ -11,4 +11,5 @@ import java.util.List;
 @Transactional
 public interface CaptorDao extends JpaRepository<Captor, String> {
     List<Captor> findBySiteId(String siteId);
+    void deleteBySiteId(String siteId);
 }

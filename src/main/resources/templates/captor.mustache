@@ -1,0 +1,39 @@
+<html>
+
+<head>
+    <title>Sites BigCorp</title>
+    {{> partial-import}}
+</head>
+
+<body>
+    {{> partial-header}}
+    <div class="container">
+            {{#captor.id}}<h1>Modification de capteur</h1>{{/captor.id}}
+            {{^captor.id}}<h1>Création de capteur</h1>{{/captor.id}}
+        <form action="/sites/{{siteId}}/captors" method="post">
+            {{#captor.id}}<input type="hidden" class="form-control" name="id" value="{{captor.id}}">{{/captor.id}}
+            <div class="form-group">
+                <label for="siteName">Site</label>
+                <input type="text" readonly class="form-control" id="siteName" value="{{captor.site.name}}">
+            </div>
+            <div class="form-group">
+                <label for="name">Nom</label>
+                {{#captor.id}}<input type="text" readonly class="form-control" id="siteName" name="name" value="{{captor.name}}">{{/captor.id}}
+                {{^captor.id}}<input type="text" class="form-control" id="siteName" name="name">{{/captor.id}}
+                <small id="nameHelp" class="form-text text-muted">Le nom d'un capteur doit unique</small>
+            </div>
+            <div class="form-group">
+                <label for="defaultPowerInWatt">Puissance par défaut</label>
+                <input type="number" class="form-control" id="defaultPowerInWatt" name="defaultPowerInWatt" required 
+                    value="{{#captor.defaultPowerInWatt}}{{captor.defaultPowerInWatt}}{{/captor.defaultPowerInWatt}}"
+                    aria-describedby="nameHelp" placeholder="Puissance par défaut (en W)">
+                <small id="nameHelp" class="form-text text-muted">Le capteur renverra toujours la même puissance égale à cette valeur saisie</small>
+            </div>
+            <a class="btn btn-secondary" href="/sites/{{siteId}}">Annuler</a>
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+        </form>
+    </div>
+    {{> partial-footer}}
+</body>
+
+</html>

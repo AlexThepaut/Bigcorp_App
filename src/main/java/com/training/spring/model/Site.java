@@ -10,7 +10,7 @@ import java.util.UUID;
 @Entity
 public class Site {
     @Id
-    private String id = UUID.randomUUID().toString();
+    private String id;
     @NotNull
     @Size(min=3, max=100)
     private String name;
@@ -19,7 +19,6 @@ public class Site {
     @Version
     private int version;
 
-    @Deprecated
     public Site() {
         // Use for serializer or deserializer
     }
@@ -62,6 +61,11 @@ public class Site {
 
     public void setVersion(int version) {
         this.version = version;
+    }
+
+    @PrePersist
+    public void generateId() {
+        this.id = UUID.randomUUID().toString();
     }
 
     @Override

@@ -6,21 +6,22 @@ import javax.persistence.*;
 @DiscriminatorValue("FIXED")
 public class FixedCaptor extends Captor{
 
-    private int defaultPowerInWatt;
+    private Integer defaultPowerInWatt;
 
     public FixedCaptor(){
         super();
     }
 
-    public FixedCaptor(String name, Site site) {
-        super(name, site);
+    public FixedCaptor(String name, Site site, Integer defaultPowerInWatt) {
+        super(name, site, PowerSource.FIXED);
+        this.defaultPowerInWatt = defaultPowerInWatt;
     }
 
-    public int getDefaultPowerInWatt() {
+    public Integer getDefaultPowerInWatt() {
         return defaultPowerInWatt;
     }
 
-    public void setDefaultPowerInWatt(int defaultPowerInWatt) {
+    public void setDefaultPowerInWatt(Integer defaultPowerInWatt) {
         this.defaultPowerInWatt = defaultPowerInWatt;
     }
 }
