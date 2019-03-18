@@ -1,5 +1,6 @@
 package com.training.spring.controller;
 
+import com.training.spring.exception.NotFoundException;
 import com.training.spring.model.Site;
 import com.training.spring.repository.CaptorDao;
 import com.training.spring.repository.MeasureDao;
@@ -37,7 +38,7 @@ public class SiteController {
 
     @GetMapping("/{id}")
     public ModelAndView findById(@PathVariable String id) {
-        return new ModelAndView("site-create").addObject("sites", siteDao.findById(id).orElseThrow(IllegalArgumentException::new));
+        return new ModelAndView("site-create").addObject("sites", siteDao.findById(id).orElseThrow(NotFoundException::new));
     }
 
     @GetMapping("/create")

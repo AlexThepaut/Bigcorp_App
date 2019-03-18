@@ -73,7 +73,7 @@ public class CaptorController {
         Site site = siteDao.findById(siteId).orElseThrow(IllegalArgumentException::new);
         Captor captor = captorDto.toCaptor(site);
         captorDao.save(captor);
-        return new ModelAndView("sites").addObject("sites", site);
+        return new ModelAndView("sites").addObject("sites", siteDao.findAll());
     }
 
     @PostMapping("/{id}/delete")
