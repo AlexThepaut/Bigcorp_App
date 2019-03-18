@@ -16,14 +16,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class FixedMeasureServiceTest {
-
-
     @Autowired
     private FixedMeasureService service;
     /**
      * Captor used in tests
      */
-    private FixedCaptor captor = new FixedCaptor("test", new Site("Site A"), 1000000);
+    private Captor captor = new FixedCaptor("test", new Site("Site A"), 1000000);
     /**
      * Start instant used in tests
      */
